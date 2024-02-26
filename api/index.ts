@@ -1,8 +1,10 @@
 import express, { Express, Request, Response } from 'express'
+import cors from 'cors'
 import { readFile } from 'fs/promises'
 
 const port = 8000
 const app: Express = express()
+app.use(cors())
 
 const shuffleArray = (array: number[]) => {
   for (let i = array.length - 1; i > 0; i--) {
@@ -70,7 +72,7 @@ app.post('/api/drivers/:driverId/overtake', (req: Request, res: Response) => {
   res.send(succeeded)
 })
 
-app.use('/static', express.static('image'))
+app.use('/api/static', express.static('image'))
 
 app.listen(port, () => {
   console.log('service started')

@@ -1,0 +1,10 @@
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.card-container {
+  border: 1px solid navy;
+  border-radius: 10px;
+  background-color: antiquewhite;
+}
