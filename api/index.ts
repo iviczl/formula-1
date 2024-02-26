@@ -1,20 +1,13 @@
 import express, { Express, Request, Response } from 'express'
 import cors from 'cors'
 import { readFile } from 'fs/promises'
+import { shuffleArray } from './utils'
 
 const port = 8000
 const app: Express = express()
 app.use(cors())
 
-const shuffleArray = (array: number[]) => {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    const temp = array[i]
-    array[i] = array[j]
-    array[j] = temp
-  }
-}
-
+// a driver's data from the json data source plus image url and placement in the race
 type Driver = {
   id: number
   code: string
@@ -26,7 +19,9 @@ type Driver = {
   place: number
 }
 
+// global variable for memory preserved data source
 let drivers: Driver[]
+
 const loadDrivers = async () => {
   try {
     const rawData = JSON.parse((await readFile('./db/drivers.json')).toString())
@@ -47,12 +42,15 @@ const loadDrivers = async () => {
     console.error(`Error when trying to read the file: {error.message}`)
   }
 }
+
 loadDrivers()
 
+// retrieves with all the drives data
 app.get('/api/drivers', async (req: Request, res: Response) => {
   res.send(drivers)
 })
 
+// executes the overtake action and retrieves with its success flag
 app.post('/api/drivers/:driverId/overtake', (req: Request, res: Response) => {
   const driverId = parseInt(req.params.driverId)
   const driver = drivers.find((driver) => driver.id === driverId)
@@ -72,7 +70,8 @@ app.post('/api/drivers/:driverId/overtake', (req: Request, res: Response) => {
   res.send(succeeded)
 })
 
-app.use('/api/static', express.static('image'))
+// static endpoint for the image resources
+app.use('/api/static', express.static('public'))
 
 app.listen(port, () => {
   console.log('service started')

@@ -7,4 +7,19 @@
   border: 1px solid navy;
   border-radius: 10px;
   background-color: antiquewhite;
+  padding: 0.6rem;
+}
+
+.action-button {
+  margin: 0.2rem;
+  padding: 0.3rem;
+  border: 1px solid gray;
+  border-radius: 5px;
+  background-color: azure;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  height: 40px;
 }

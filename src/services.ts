@@ -3,6 +3,7 @@ import { Driver } from './types'
 
 let abortController: AbortController
 
+// gets the derivers' data
 export async function getDrivers() {
   abortController = new AbortController()
   const result = await doFetch(`${apiBasePath}/drivers`)
@@ -13,9 +14,10 @@ export async function getDrivers() {
   return (await result.response) as Driver[]
 }
 
+// initiates an overtake
 export async function overtake(driverId: number) {
   abortController = new AbortController()
-  const result = await doFetch(`${apiBasePath}/${driverId}/overtake`, {
+  const result = await doFetch(`${apiBasePath}/drivers/${driverId}/overtake`, {
     method: 'POST',
   })
 
