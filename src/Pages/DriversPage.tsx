@@ -9,7 +9,7 @@ const DriversPage = () => {
 
   // sets the drivers to the state
   const loadDrivers = async () => {
-    const data = await getDrivers()
+    const data = await getDrivers(new AbortController())
     if (data) {
       setDrivers(data)
     }
@@ -17,7 +17,7 @@ const DriversPage = () => {
 
   // overtake action and if it was successful loads the drivers again
   const action = async (driverId: number) => {
-    const success = await overtake(driverId)
+    const success = await overtake(driverId, new AbortController())
     if (success) {
       loadDrivers()
     }

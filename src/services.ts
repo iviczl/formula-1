@@ -1,11 +1,13 @@
 import { apiBasePath } from './constants'
 import { Driver } from './types'
 
-let abortController: AbortController
-
+let _abortController: AbortController | undefined
 // gets the derivers' data
-export async function getDrivers() {
-  abortController = new AbortController()
+export async function getDrivers(abortController: AbortController | undefined) {
+  if (_abortController && !_abortController.signal.aborted) {
+    _abortController.abort()
+  }
+  _abortController = abortController
   const result = await doFetch(`${apiBasePath}/drivers`)
 
   if (assertError(result)) {
@@ -15,8 +17,14 @@ export async function getDrivers() {
 }
 
 // initiates an overtake
-export async function overtake(driverId: number) {
-  abortController = new AbortController()
+export async function overtake(
+  driverId: number,
+  abortController: AbortController | undefined
+) {
+  if (_abortController && !_abortController.signal.aborted) {
+    _abortController.abort()
+  }
+  _abortController = abortController
   const result = await doFetch(`${apiBasePath}/drivers/${driverId}/overtake`, {
     method: 'POST',
   })
@@ -40,11 +48,11 @@ export async function doFetch(url: string, options = {}) {
   let response = null
   let error = null
   try {
-    const signal = abortController.signal
+    const signal = _abortController?.signal
     const res = await fetch(url, { ...options, signal })
     response = await res.json()
+    _abortController = undefined
   } catch (problem) {
-    abortController.abort()
     error = problem
   }
   return { response, error }
